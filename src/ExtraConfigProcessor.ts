@@ -28,6 +28,8 @@ export const getTableName = (
     currentTableName: string,
     shouldGetOriginal: boolean,
 ): string => {
+    let retVal: string = currentTableName;
+
     if (conversion._extraConfig !== null && 'tables' in conversion._extraConfig) {
         for (let i = 0; i < conversion._extraConfig.tables.length; ++i) {
             const tableName: string = shouldGetOriginal
@@ -35,14 +37,18 @@ export const getTableName = (
                 : conversion._extraConfig.tables[i].name.original;
 
             if (tableName === currentTableName) {
-                return shouldGetOriginal
+                retVal = shouldGetOriginal
                     ? conversion._extraConfig.tables[i].name.original
                     : conversion._extraConfig.tables[i].name.new;
             }
         }
+
+        if (conversion._extraConfig.lowerCaseAllTableNames && !shouldGetOriginal) {
+            retVal = retVal.toLowerCase();
+        }
     }
 
-    return currentTableName;
+    return retVal;
 };
 
 /**
